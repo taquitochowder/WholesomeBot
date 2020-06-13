@@ -1,3 +1,4 @@
+import aiohttp
 import logging
 import os
 from discord.ext import commands
@@ -43,6 +44,22 @@ async def on_ready():
     print(f'Logged in as {bot.user.name} - {bot.user.id}')
     for cog in cogs:
         bot.load_extension(cog)
+
+@bot.event
+async def on_message(message):
+    if bot.user.mentioned_in(message) and message.mention_everyone is False:
+        # Compliment the user
+        compliment_api = "https://complimentr.com/api"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(compliment_api) as r:
+                if r.status == 200:
+                    js = await r.json()
+                    compliment = js['compliment']
+
+                    await message.channel.send(f'{message.author.mention} {compliment}')
+        return
+
+    await bot.process_commands(message)
 
 # Log in the bot
 bot.run(os.getenv('WHOLESOME_TOKEN'), bot=True, reconnect=True)
