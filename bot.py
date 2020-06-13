@@ -35,7 +35,7 @@ bot = commands.Bot(
 )
 
 # get command groups (cogs)
-cogs = ['cogs.utility']
+cogs = ['cogs.utility', 'cogs.wholesome']
 
 
 @bot.event
