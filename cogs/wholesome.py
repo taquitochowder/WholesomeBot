@@ -14,28 +14,51 @@ class Wholesome(commands.Cog):
         aliases=['dog']
     )
     async def doggo_command(self, ctx):
-        failure_message = 'Could not send dog... :cry:'
+        failure_message = 'Could not send doggo... :cry:'
 
         # api endpoint for getting random dog images
         dog_api = 'https://dog.ceo/api/breeds/image/random'
 
-        # get dog image url
-        dog_url = None
         async with aiohttp.ClientSession() as session:
             async with session.get(dog_api) as r:
                 if r.status == 200:
                     js = await r.json()
                     dog_url = js['message']
+
+                    # send the dog image
+                    async with session.get(dog_url) as resp:
+                        if resp.status != 200:
+                            return await ctx.send(failure_message)
+                        data = io.BytesIO(await resp.read())
+                        await ctx.send(file=discord.File(data, 'doggo.jpg'))
                 else:
                     return await ctx.send(failure_message)
 
-        # send the dog image
+    @commands.command(
+        name='catto',
+        description='Sends a random cat image',
+        aliases=['cat']
+    )
+    async def catto_command(self, ctx):
+        failure_message = 'Could not send catto... :cry:'
+
+        # api endpoint for getting random cat images
+        cat_api = 'http://aws.random.cat/meow'
+
         async with aiohttp.ClientSession() as session:
-            async with session.get(dog_url) as resp:
-                if resp.status != 200:
+            async with session.get(cat_api) as r:
+                if r.status == 200:
+                    js = await r.json()
+                    cat_url = js['file']
+
+                    # send the cat image
+                    async with session.get(cat_url) as resp:
+                        if resp.status != 200:
+                            return await ctx.send(failure_message)
+                        data = io.BytesIO(await resp.read())
+                        await ctx.send(file=discord.File(data, 'catto.jpg'))
+                else:
                     return await ctx.send(failure_message)
-                data = io.BytesIO(await resp.read())
-                await ctx.send(file=discord.File(data, 'doggo.jpg'))
 
 
 def setup(bot):
