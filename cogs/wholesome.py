@@ -2,7 +2,6 @@ from discord.ext import commands
 import aiohttp
 import discord
 import io
-import requests
 
 
 class Wholesome(commands.Cog):
@@ -20,13 +19,17 @@ class Wholesome(commands.Cog):
         # api endpoint for getting random dog images
         dog_api = 'https://dog.ceo/api/breeds/image/random'
 
-        # get JSON response from api
-        r = requests.get(dog_api)
-        if r.status_code != 200:
-            return await ctx.send(failure_message)
+        # get dog image url
+        dog_url = None
+        async with aiohttp.ClientSession() as session:
+            async with session.get(dog_api) as r:
+                if r.status == 200:
+                    js = await r.json()
+                    dog_url = js['message']
+                else:
+                    return await ctx.send(failure_message)
 
         # send the dog image
-        dog_url = r.json()['message']
         async with aiohttp.ClientSession() as session:
             async with session.get(dog_url) as resp:
                 if resp.status != 200:
