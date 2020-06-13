@@ -16,9 +16,11 @@ class Utility(commands.Cog):
 
         msg = await ctx.send(content='Pinging....')
 
+        rtt = (dt.timestamp(dt.now()) - start) * 1000
+
         # Edit the ping message with the round trip time on completion
         await msg.edit(content=f"""
-        Pong!\nOne message round-trip took {(dt.timestamp(dt.now()) - start) * 1000} ms
+        Pong!\nOne message round-trip took {rtt} ms
         """)
 
 

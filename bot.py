@@ -10,8 +10,10 @@ load_dotenv()
 # set up logger
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8',
+                              mode='w')
+handler.setFormatter(logging.Formatter(('%(asctime)s:%(levelname)s:%(name)s: '
+                                        '%(message)s')))
 logger.addHandler(handler)
 
 
@@ -45,6 +47,7 @@ async def on_ready():
     for cog in cogs:
         bot.load_extension(cog)
 
+
 @bot.event
 async def on_message(message):
     if bot.user.mentioned_in(message) and message.mention_everyone is False:
@@ -56,7 +59,9 @@ async def on_message(message):
                     js = await r.json()
                     compliment = js['compliment']
 
-                    await message.channel.send(f'{message.author.mention} {compliment}')
+                    await message.channel.send(
+                        f'{message.author.mention} {compliment}'
+                    )
         return
 
     await bot.process_commands(message)
