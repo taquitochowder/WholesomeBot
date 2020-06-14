@@ -8,6 +8,22 @@ class Wholesome(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if (self.bot.user.mentioned_in(message) and
+           message.mention_everyone is False):
+            # Compliment the user
+            compliment_api = "https://complimentr.com/api"
+            async with aiohttp.ClientSession() as session:
+                async with session.get(compliment_api) as r:
+                    if r.status == 200:
+                        js = await r.json()
+                        compliment = js['compliment']
+
+                        await message.channel.send(
+                            f'{message.author.mention} {compliment}'
+                        )
+
     @commands.command(
         name='doggo',
         description='Sends a random dog image',
