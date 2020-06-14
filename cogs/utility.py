@@ -1,5 +1,6 @@
 from discord.ext import commands
 from datetime import datetime as dt
+from random import choice
 
 
 class Utility(commands.Cog):
@@ -22,6 +23,15 @@ class Utility(commands.Cog):
         await msg.edit(content=f"""
         Pong!\nOne message round-trip took {rtt} ms
         """)
+
+    @commands.command(
+        name='choose',
+        description='Randomly choose between given options',
+        aliases=['c']
+    )
+    async def choose_command(self, ctx, *args):
+        selected_choice = choice(args)
+        await ctx.send(f'{selected_choice} was chosen')
 
 
 def setup(bot):
