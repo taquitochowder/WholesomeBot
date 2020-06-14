@@ -60,6 +60,26 @@ class Wholesome(commands.Cog):
                 else:
                     return await ctx.send(failure_message)
 
+    @commands.command(
+        name='dadjoke',
+        description='Sends a dad joke',
+        aliases=['dj']
+    )
+    async def dadjoke_command(self, ctx):
+        failure_message = 'Could not send dad joke... :cry:'
+
+        # url to get dad jokes
+        joke_api = 'https://icanhazdadjoke.com/'
+        headers = {'Accept': 'text/plain'}
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(joke_api, headers=headers) as r:
+                if r.status == 200:
+                    joke = await r.text()
+                    await ctx.send(joke)
+                else:
+                    return await ctx.send(failure_message)
+
 
 def setup(bot):
     bot.add_cog(Wholesome(bot))
