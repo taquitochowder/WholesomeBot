@@ -59,20 +59,13 @@ class Wholesome(commands.Cog):
         failure_message = 'Could not send catto... :cry:'
 
         # api endpoint for getting random cat images
-        cat_api = 'http://aws.random.cat/meow'
+        cat_api = 'https://cataas.com/cat'
 
         async with aiohttp.ClientSession() as session:
             async with session.get(cat_api) as r:
                 if r.status == 200:
-                    js = await r.json()
-                    cat_url = js['file']
-
-                    # send the cat image
-                    async with session.get(cat_url) as resp:
-                        if resp.status != 200:
-                            return await ctx.send(failure_message)
-                        data = io.BytesIO(await resp.read())
-                        await ctx.send(file=discord.File(data, 'catto.jpg'))
+                    data = io.BytesIO(await r.read())
+                    await ctx.send(file=discord.File(data, 'catto.jpg'))
                 else:
                     return await ctx.send(failure_message)
 
